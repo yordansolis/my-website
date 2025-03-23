@@ -1,5 +1,10 @@
+name = "my-website"
 compatibility_date = "2025-03-23"
 
-# Configuración para sitio web estático
 [site]
 bucket = "."
+
+[build]
+command = "" 
+upload.format = "directory"
+upload.dir = "."
