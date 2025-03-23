@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Detección de Intenciones con IA | FastAPI | Proyecto</title>
+    <meta name="description" content="Cómo crear una API para detectar intenciones de usuarios usando FastAPI y OpenAI. Proyecto completo con ejemplos de código y guía de implementación.">
+    <link rel="shortcut icon" href="icons/image.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para el artículo del blog */
+        .blog-article {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .blog-article__header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .blog-article__title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .blog-article__meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__date, 
+        .blog-article__author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .blog-article__date svg,
+        .blog-article__author svg {
+            margin-right: 5px;
+        }
+        
+        .blog-article__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .blog-article__tag {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .blog-article__body {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+        
+        .blog-article__body h2 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .blog-article__body h3 {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin: 30px 0 15px;
+        }
+        
+        .blog-article__body p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body ul,
+        .blog-article__body ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .blog-article__body li {
+            margin-bottom: 10px;
+        }
+        
+        .blog-article__body code {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .blog-article__body pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .blog-article__body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            background-color: rgba(37, 99, 235, 0.05);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .blog-article__body img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .blog-article__body .code-filename {
+            display: block;
+            padding: 8px 15px;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-bottom: -20px;
+        }
+        
+        /* Estructura de código */
+        .code-block {
+            margin-bottom: 30px;
+        }
+        
+        /* Diagrama de flujo */
+        .flow-diagram {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #4b5563;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge.blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .badge.green {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .badge.red {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        @media (max-width: 768px) {
+            .blog-article {
+                padding: 20px;
+                margin-top: 100px;
+            }
+            
+            .blog-article__title {
+                font-size: 2rem;
+            }
+            
+            .flow-diagram {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+            
+            .flow-step {
+                width: 80%;
+            }
+            
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                bottom: -30px;
+                top: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (se mantiene la del template) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#about">Sobre mí</a></li>
+                <li><a href="index.html#skills">Habilidades</a></li>
+                <li><a href="index.html#experience">Experiencia</a></li>
+                <li><a href="index.html#projects">Proyectos</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#contact">Contacto</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Artículo del Blog -->
+    <article class="blog-article">
+        <header class="blog-article__header">
+            <h1 class="blog-article__title">API de Detección de Intenciones con Inteligencia Artificial</h1>
+            <div class="blog-article__meta">
+                <div class="blog-article__date">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    8 de marzo, 2025
+                </div>
+                <div class="blog-article__author">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Jhordan Solis
+                </div>
+            </div>
+            <div class="blog-article__tags">
+                <span class="blog-article__tag">FastAPI</span>
+                <span class="blog-article__tag">OpenAI</span>
+                <span class="blog-article__tag">Python</span>
+                <span class="blog-article__tag">API</span>
+                <span class="blog-article__tag">IA</span>
+            </div>
+        </header>
+        
+        <div class="blog-article__body">
+            <h2>📝 Descripción</h2>
+            <p>
+                La API de intenciones es un servicio diseñado para detectar y analizar las intenciones de los usuarios a partir de mensajes de texto. Utilizando modelos avanzados de OpenAI, esta API puede identificar la intención del usuario entre un conjunto de posibles intenciones proporcionadas y evaluar el nivel de confianza de esta detección.
+            </p>
+            
+            <h2>🚀 Características principales</h2>
+            <ul>
+                <li><strong>Detección de intenciones:</strong> Analiza texto para identificar la intención del usuario</li>
+                <li><strong>Niveles de confianza:</strong> Proporciona una puntuación de confianza para cada detección</li>
+                <li><strong>Explicaciones detalladas:</strong> Ofrece explicaciones sobre el análisis realizado</li>
+                <li><strong>Recomendaciones de acción:</strong> Sugiere acciones basadas en la intención detectada</li>
+            </ul>
+            
+            <h2>🛠️ Tecnologías utilizadas</h2>
+            <p>La implementación de esta API se basa en las siguientes tecnologías:</p>
+            <ul>
+                <li><span class="badge blue">FastAPI</span> Framework moderno y de alto rendimiento para crear APIs con Python</li>
+                <li><span class="badge blue">OpenAI API</span> Integración con modelos de lenguaje de OpenAI (GPT-4o-mini)</li>
+                <li><span class="badge blue">Mangum</span> Adaptador para ejecutar aplicaciones ASGI en AWS Lambda</li>
+                <li><span class="badge blue">Pydantic</span> Validación de datos y configuración de esquemas</li>
+                <li><span class="badge blue">Python-dotenv</span> Gestión de variables de entorno</li>
+            </ul>
+            
+            <h2>📋 Requisitos</h2>
+            <div class="code-block">
+                <span class="code-filename">requirements.txt</span>
+                <pre><code>fastapi==0.115.6
+mangum==0.17.0
+openai==0.28.0
+pydantic==2.10.4
+python-dotenv==1.0.1</code></pre>
+            </div>
+            
+            <h2>🚀 Instalación</h2>
+            <ol>
+                <li>Clona este repositorio</li>
+                <li>
+                    Crea un entorno virtual:
+                    <pre><code>python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate</code></pre>
+                </li>
+                <li>
+                    Instala las dependencias:
+                    <pre><code>pip install -r requirements.txt</code></pre>
+                </li>
+                <li>
+                    Crea un archivo <code>.env.dev</code> con tu clave de API de OpenAI:
+                    <pre><code>API_KEY_OPENAI=tu_clave_api_aquí</code></pre>
+                </li>
+            </ol>
+            
+            <h2>🔧 Estructura del proyecto</h2>
+            <div class="code-block">
+                <pre><code>.
+├── .env.dev                   # Variables de entorno (no incluido en el repo)
+├── main.py                    # Punto de entrada de la aplicación FastAPI
+├── schemas.py                 # Definición de los modelos de datos con Pydantic
+├── scripts.py                 # Funciones auxiliares para el procesamiento
+└── requirements.txt           # Dependencias del proyecto</code></pre>
+            </div>
+            
+            <h2>🌐 Endpoints</h2>
+            
+            <h3>GET <code>/</code></h3>
+            <p>Endpoint de bienvenida para verificar que la API está funcionando.</p>
+            <div class="code-block">
+                <span class="code-filename">Respuesta:</span>
+                <pre><code>{
+  "mensaje": "Welcome to API 🚀",
+  "status": 200
+}</code></pre>
+            </div>
+            
+            <h3>POST <code>/detect_intention</code></h3>
+            <p>Endpoint principal para detectar la intención del usuario.</p>
+            <div class="code-block">
+                <span class="code-filename">Cuerpo de la petición:</span>
+                <pre><code>{
+  "text": "Me gustaría contratar el plan premium",
+  "intentions": ["compra", "consulta", "queja", "cancelacion"]
+}</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-filename">Respuesta exitosa (intención detectada):</span>
+                <pre><code>{
+  "intencion": "intencion detected",
+  "response": true,
+  "status": 200
+}</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-filename">Respuesta (intención con baja confianza):</span>
+                <pre><code>{
+  "intencion": "intencion not detected",
+  "response": false,
+  "status": 200
+}</code></pre>
+            </div>
+            
+            <h2>🧠 Funcionamiento interno</h2>
+            <p>El proceso de detección de intenciones sigue estos pasos:</p>
+            
+            <div class="flow-diagram">
+                <div class="flow-step">Recepción de la solicitud</div>
+                <div class="flow-step">Preparación del prompt</div>
+                <div class="flow-step">Análisis con IA</div>
+                <div class="flow-step">Evaluación de confianza</div>
+                <div class="flow-step">Respuesta</div>
+            </div>
+            
+            <ol>
+                <li><strong>Recepción de la solicitud:</strong> La API recibe un texto y una lista de posibles intenciones</li>
+                <li><strong>Preparación del prompt:</strong> Se construye un prompt especializado para el modelo de OpenAI</li>
+                <li><strong>Análisis con IA:</strong> El modelo GPT-4o-mini analiza el texto y determina la intención más probable</li>
+                <li><strong>Evaluación de confianza:</strong>
+                    <ul>
+                        <li>Si la confianza es ≥ 0.6, se considera una intención válida</li>
+                        <li>Si la confianza es ≤ 0.3, se considera una detección no confiable</li>
+                    </ul>
+                </li>
+                <li><strong>Respuesta:</strong> Se devuelve un resultado estructurado con la determinación final</li>
+            </ol>
+            
+            <h2>📊 Ejemplo de procesamiento interno</h2>
+            <p>Veamos un ejemplo paso a paso:</p>
+            <ol>
+                <li><strong>Mensaje recibido:</strong> "Me gustaría saber más sobre los planes disponibles"</li>
+                <li><strong>Intenciones posibles:</strong> ["compra", "consulta", "queja", "cancelacion"]</li>
+                <li><strong>Análisis del modelo:</strong></li>
+            </ol>
+            
+            <div class="code-block">
+                <pre><code>{
+  "detected_intention": "consulta",
+  "confidence": 0.85,
+  "explanation": "El usuario está solicitando información sobre los planes, lo que indica una intención de consulta",
+  "action": {
+    "type": "provide_information",
+    "details": "Mostrar catálogo de planes disponibles"
+  }
+}</code></pre>
+            </div>
+            
+            <p><strong>Resultado final:</strong> Intención "consulta" detectada con alta confianza</p>
+            
+            <h2>🔐 Seguridad</h2>
+            <ul>
+                <li>La API utiliza variables de entorno para las credenciales sensibles</li>
+                <li>Configuración CORS para controlar el acceso desde diferentes orígenes</li>
+            </ul>
+            
+            <h2>🚀 Despliegue</h2>
+            <p>Esta API está diseñada para ser desplegada en AWS Lambda utilizando Mangum como adaptador, lo que permite una escalabilidad eficiente y un mantenimiento simplificado.</p>
+            
+            <h2>📈 Próximas mejoras</h2>
+            <p>Algunas características planeadas para futuras versiones:</p>
+            <ul>
+                <li>Soporte para análisis de sentimientos</li>
+                <li>Integración con más modelos de lenguaje</li>
+                <li>Historial de intenciones detectadas</li>
+                <li>Dashboard para análisis de patrones de intención</li>
+            </ul>
+            
+            <p>
+                Si estás interesado en implementar esta solución o tienes preguntas sobre el proyecto, 
+                no dudes en contactarme a través de mi <a href="https://github.com/yordansolis" target="_blank">GitHub</a> 
+                o <a href="https://www.linkedin.com/in/jhordan-solis/" target="_blank">LinkedIn</a>.
+            </p>
+            
+            <blockquote>
+                "La verdadera inteligencia no está en encontrar respuestas exactas, sino en entender la intención 
+                detrás de las palabras." — Jhordan Solis
+            </blockquote>
+        </div>
+        
+    </article>
+    <!-- Footer (se mantiene el del template) -->
+    <footer class="site-footer">
+        <div class="site-footer__content">
+          <!-- Título o logo -->
+          <h3 class="site-footer__logo">Portfolio</h3>
+          <!-- Texto descriptivo -->
+          <p class="site-footer__text">Conecta conmigo en mis redes sociales.</p>
+          <!-- Lista de enlaces sociales -->
+          <ul class="site-footer__links">
+            <li>
+              <a href="https://github.com/yordansolis" class="site-footer__social-link" target="_blank" aria-label="GitHub">
+                <!-- Ícono de GitHub -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 007.86 10.93c.57.1.78-.25.78-.56v-2.06c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.33.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.26 1.18-3.05-.12-.3-.52-1.53.12-3.2 0 0 .97-.31 3.18 1.18a11.04 11.04 0 015.78 0C17.73 3.38 18.7 3.7 18.7 3.7c.64 1.67.24 2.9.12 3.2.74.79 1.18 1.8 1.18 3.05 0 4.4-2.69 5.37-5.26 5.66.41.35.77 1.03.77 2.08v3.08c0 .31.21.67.79.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/jhordan-solis/" class="site-footer__social-link" target="_blank" aria-label="LinkedIn">
+                <!-- Ícono de LinkedIn -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.049c.476-.9 1.635-1.852 3.367-1.852 3.602 0 4.269 2.37 4.269 5.456v6.287zM5.337 7.433a2.062 2.062 0 11-.001-4.124 2.062 2.062 0 01.001 4.124zM7.114 20.452H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.554C0 23.229.792 24 1.771 24h20.451C23.207 24 24 23.229 24 22.277V1.723C24 .771 23.207 0 22.225 0z"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+          <!-- Pie de página -->
+          <p class="site-footer__copyright">
+            © 2025 Jhordan Solis. Todos los derechos reservados.
+          </p>
+        </div>
+    </footer>
+    <!-- Script para toggle del tema y menú móvil -->
+    <script src="main.js"></script>
+</body>
+</html>

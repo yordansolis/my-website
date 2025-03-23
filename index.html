@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi CV - Desarrollador Backend IA</title>
+    <link rel="shortcut icon" href="icons/image.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">Portfolio</a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#about">Sobre mí</a></li>
+                <li><a href="#skills">Habilidades</a></li>
+                <li><a href="#experience">Experiencia</a></li>
+                <li><a href="#projects">Proyectos</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contacto</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Desarrollador Backend especializado en <span class="highlight">Inteligencia Artificial</span></h1>
+                    <p>Ingeniero con experiencia en Python, Laravel, AWS e integración de APIs de IA. Creo arquitecturas escalables y soluciones impulsadas por inteligencia artificial.</p>
+                    <div class="hero-btns">
+                        <a href="#projects" class="btn btn-primary">Ver Proyectos</a>
+                        <a href="#contact" class="btn btn-outline">Contactame</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div> -->
+        </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Sobre Mí</h2>
+                <p class="section-subtitle">Ingeniero y desarrollador backend con enfoque en inteligencia artificial y servicios en la nube.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="/img/photo-01.jpeg" alt="Mi foto profesional">
+                </div>
+                <div class="about-content">
+                    <h3>Desarrollador con pasión por la IA</h3>
+                    <p>Soy un ingeniero especializado en el desarrollo de soluciones backend impulsadas por inteligencia artificial. Mi experiencia incluye la creación de arquitecturas de microservicios, integración de APIs de IA y despliegue de soluciones en AWS.</p>
+                    <p>Durante mi carrera, he desarrollado proyectos utilizando tecnologías como Python con FastAPI, PHP con Laravel, servicios de AWS como Lambda, ElastiCache y RDS, y he integrado APIs de inteligencia artificial como OpenAI para crear soluciones innovadoras.</p>
+                    <p>Mi objetivo es combinar mi conocimiento técnico con las últimas tecnologías de IA para desarrollar soluciones escalables y eficientes que aporten valor real a los usuarios y empresas.</p>
+                    <a href="#contact" class="btn btn-primary">Contáctame</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section skills" id="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mis Habilidades</h2>
+                <p class="section-subtitle">Estas son las tecnologías y herramientas con las que trabajo diariamente.</p>
+            </div>
+            <div class="skills-container">
+                <div class="skill-card">
+                    <div class="skill-icon">🐍</div>
+                    <h3 class="skill-title">Backend Development</h3>
+                    <ul class="skill-list">
+                        <li>Python</li>
+                        <li>FastAPI</li>
+                        <li>PHP</li>
+                        <li>Laravel</li>
+
+                        <li>API RESTful</li>
+                        <li>Microservicios</li>
+                        <li>Arquitectura de software</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">☁️</div>
+                    <h3 class="skill-title">Cloud & DevOps</h3>
+                    <ul class="skill-list">
+                        <li>AWS Lambda</li>
+                        <li>Redis ElastiCache</li>
+                        <li>MySQL RDS</li>
+                        <li>Configuración de VPC</li>
+                        <li>Despliegue automatizado</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🧠</div>
+                    <h3 class="skill-title">Inteligencia Artificial</h3>
+                    <ul class="skill-list">
+                        <li>Integración de APIs de OpenAI</li>
+                        <li>Diseño de agentes de IA</li>
+                        <li>Sistemas de procesamiento de lenguaje</li>
+                        <li>Automatización con IA</li>
+                        <li>Sistemas conversacionales</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🛠️</div>
+                    <h3 class="skill-title">Herramientas & Metodologías</h3>
+                    <ul class="skill-list">
+                        <li>Git & GitHub</li>
+                        <li>YAML para configuración</li>
+                        <li>Desarrollo ágil</li>
+                        <li>CI/CD</li>
+                        <li>Documentación técnica</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="section" id="experience">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mi Experiencia</h2>
+                <p class="section-subtitle">Un recorrido por mi trayectoria profesional y proyectos destacados.</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023 - 2024</span>
+                        <h3 class="timeline-title">Desarrollador Backend Junior - IA</h3>
+                        <p class="timeline-desc">Desarrollé tres proyectos principales utilizando APIs de OpenAI y funciones Lambda en AWS. Implementé arquitecturas de microservicios y configuré entornos en la nube con VPC, subredes y servicios de AWS.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023</span>
+                        <h3 class="timeline-title">Proyecto: Sistema de Agentes IA</h3>
+                        <p class="timeline-desc">Diseñé y desarrollé un sistema de agentes inteligentes que permite a los usuarios interactuar con la IA a través de la API de OpenAI, implementado con una arquitectura de microservicios en AWS.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023</span>
+                        <h3 class="timeline-title">Proyecto: Integración de API OpenAI</h3>
+                        <p class="timeline-desc">Implementé soluciones utilizando la API de OpenAI con funciones Lambda para automatizar procesos y mejorar la experiencia de usuario en aplicaciones web.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">Anterior</span>
+                        <h3 class="timeline-title">Formación en Ingeniería</h3>
+                        <p class="timeline-desc">Completé mis estudios en ingeniería con enfoque en desarrollo de software y sistemas. Adquirí conocimientos sólidos en programación, bases de datos y arquitectura de software.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section blog" id="blog">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Blog Técnico</h2>
+                <p class="section-subtitle">Artículos sobre desarrollo, inteligencia artificial y tecnologías cloud.</p>
+            </div>
+            
+            <div class="blog-container">
+                <!-- Artículos del blog -->
+                <div class="blog-posts">
+                    <article class="blog-post">
+                        <img src="icons/github-142-svgrepo-com.svg" alt="Artículo 1" class="blog-image icons-icon">
+                        <div class="blog-content">
+                            <span class="blog-date">10 Febrero, 2025</span>
+                           
+
+                            <h3 class="blog-title">API para Detectar Texto con Inteligencia Artificial 🔍</h3>
+                            <p class="blog-excerpt">Este proyecto implementa una API que detecta frases clave predefinidas dentro de mensajes de texto.</p>
+                            <a href="blog-post-1.html" class="blog-link">Leer más</a>
+                        </div>
+                    </article>
+                    
+                    <article class="blog-post">
+                        <img src="icons/github-142-svgrepo-com.svg" alt="Artículo 2" class="blog-image icons-icon">
+                        <div class="blog-content">
+                            <span class="blog-date">25 Enero, 2025</span>
+                            <h3 class="blog-title">Convertidor de Audio a Texto con Inteligencia Artificial </h3>
+                            <p class="blog-excerpt">Este proyecto es una API desarrollada con FastAPI que permite convertir archivos de audio a texto utilizando el modelo Whisper de OpenAI. </p>
+                            <a href="blog-post-2.html" class="blog-link">Leer más</a>
+                        </div>
+                    </article>
+                    
+                    <article class="blog-post">
+                        <img src="icons/github-142-svgrepo-com.svg" alt="Artículo 3" class="blog-image icons-icon">
+                        <div class="blog-content">
+                            <span class="blog-date">15 Febrero, 2025</span>
+                            <h3 class="blog-title">API de Detección de Intenciones con Inteligencia Artificial</h3>
+                            <p class="blog-excerpt">La API de intenciones es un servicio diseñado para detectar y analizar las intenciones de los usuarios a partir de mensajes de texto.</p>
+                            <a href="blog-post-3.html" class="blog-link">Leer más</a>
+                        </div>
+                    </article>
+                    
+                    <article class="blog-post">
+                        <img src="icons/github-142-svgrepo-com.svg" alt="Artículo 4" class="blog-image icons-icon">
+                        <div class="blog-content">
+                            <span class="blog-date">5 Enero, 2025</span>
+                            <h3 class="blog-title">API para Procesamiento de Documentos con Inteligencia Artificial</h3>
+                                <p class="blog-excerpt"> Esta API permite procesar automáticamente archivos PDF, Word (DOCX) y Excel utilizando inteligencia artificial a través de OpenAI.</p>
+                            <a href="blog-post-4.html" class="blog-link">Leer más</a>
+                        </div>
+                    </article>
+                </div>
+                
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn next">→</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section projects" id="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Proyectos Destacados</h2>
+                <p class="section-subtitle">Una muestra de los proyectos más relevantes en los que he trabajado.</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <img src="/api/placeholder/400/200" alt="Proyecto 1" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">Sistema de Agentes IA</h3>
+                        <p class="project-desc">Arquitectura de microservicios para interacción con agentes de IA a través de la API de OpenAI, desplegada en AWS.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">FastAPI</span>
+                            <span class="tag">OpenAI</span>
+                            <span class="tag">AWS</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Ver detalles</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="/api/placeholder/400/200" alt="Proyecto 2" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">API Backend con Lambda</h3>
+                        <p class="project-desc">Sistema de backend utilizando funciones Lambda y API Gateway para procesamiento de datos en tiempo real.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">AWS Lambda</span>
+                            <span class="tag">API Gateway</span>
+                            <span class="tag">DynamoDB</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Ver detalles</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="/api/placeholder/400/200" alt="Proyecto 3" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">Integración IA para Análisis</h3>
+                        <p class="project-desc">Sistema de análisis de datos utilizando modelos de IA para procesamiento de texto y generación de informes automatizados.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">OpenAI</span>
+                            <span class="tag">Redis</span>
+                            <span class="tag">MySQL</span>
+                        </div>
+                        <a href="#" class="btn btn-outline">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="site-footer__content">
+      <!-- Título o logo -->
+      <h3 class="site-footer__logo">Portfolio</h3>
+      <!-- Texto descriptivo -->
+      <p class="site-footer__text">Conecta conmigo en mis redes sociales.</p>
+      <!-- Lista de enlaces sociales -->
+      <ul class="site-footer__links">
+        <li>
+          <a href="https://github.com/yordansolis" class="site-footer__social-link" target="_blank" aria-label="GitHub">
+            <!-- Ícono de GitHub -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 007.86 10.93c.57.1.78-.25.78-.56v-2.06c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.33.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.26 1.18-3.05-.12-.3-.52-1.53.12-3.2 0 0 .97-.31 3.18 1.18a11.04 11.04 0 015.78 0C17.73 3.38 18.7 3.7 18.7 3.7c.64 1.67.24 2.9.12 3.2.74.79 1.18 1.8 1.18 3.05 0 4.4-2.69 5.37-5.26 5.66.41.35.77 1.03.77 2.08v3.08c0 .31.21.67.79.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/jhordan-solis/" class="site-footer__social-link" target="_blank" aria-label="LinkedIn">
+            <!-- Ícono de LinkedIn -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.049c.476-.9 1.635-1.852 3.367-1.852 3.602 0 4.269 2.37 4.269 5.456v6.287zM5.337 7.433a2.062 2.062 0 11-.001-4.124 2.062 2.062 0 01.001 4.124zM7.114 20.452H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.554C0 23.229.792 24 1.771 24h20.451C23.207 24 24 23.229 24 22.277V1.723C24 .771 23.207 0 22.225 0z"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <!-- Pie de página -->
+      <p class="site-footer__copyright">
+        © 2025 Jhordan Solis. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+  
+<script src="main.js"></script>
+</body>
+</html>

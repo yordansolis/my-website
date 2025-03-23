@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API para Detectar Texto con Inteligencia Artificial 🔍</title>
+    <link rel="shortcut icon" href="icons/image.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para el artículo del blog */
+        .blog-article {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .blog-article__header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .blog-article__title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .blog-article__meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__date, 
+        .blog-article__author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .blog-article__date svg,
+        .blog-article__author svg {
+            margin-right: 5px;
+        }
+        
+        .blog-article__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .blog-article__body {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+        
+        .blog-article__body h2 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .blog-article__body h3 {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin: 30px 0 15px;
+        }
+        
+        .blog-article__body p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body ul,
+        .blog-article__body ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .blog-article__body li {
+            margin-bottom: 10px;
+        }
+        
+        .blog-article__body code {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .blog-article__body pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .blog-article__body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            background-color: rgba(37, 99, 235, 0.05);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .blog-article__body img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .blog-article__body .code-filename {
+            display: block;
+            padding: 8px 15px;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-bottom: -20px;
+        }
+        
+        /* Estructura de código */
+        .code-block {
+            margin-bottom: 30px;
+        }
+        
+        /* Diagrama de flujo */
+        .flow-diagram {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .blog-article {
+                padding: 20px;
+                margin-top: 100px;
+            }
+            
+            .blog-article__title {
+                font-size: 2rem;
+            }
+            
+            .flow-diagram {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+            
+            .flow-step {
+                width: 80%;
+            }
+            
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                bottom: -30px;
+                top: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (se mantiene la del template) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#about">Sobre mí</a></li>
+                <li><a href="index.html#skills">Habilidades</a></li>
+                <li><a href="index.html#experience">Experiencia</a></li>
+                <li><a href="index.html#projects">Proyectos</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#contact">Contacto</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Artículo del Blog -->
+    <article class="blog-article">
+        <header class="blog-article__header">
+            <h1 class="blog-article__title">API para Detectar Texto con Inteligencia Artificial 🔍</h1>
+            <div class="blog-article__meta">
+                <span class="blog-article__date">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Marzo 7, 2025
+                </span>
+                <span class="blog-article__author">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Jhordan Solis
+                </span>
+            </div>
+            <div class="blog-article__tags">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">OpenAI</span>
+                <span class="tag">NLP</span>
+                <span class="tag">API</span>
+            </div>
+        </header>
+        
+        <div class="blog-article__body">
+            <p>
+                ¿Alguna vez has necesitado detectar automáticamente cuando alguien menciona ciertas frases clave en un texto? 
+                En este artículo, te presento mi más reciente proyecto: una API inteligente que utiliza la potencia de OpenAI 
+                para detectar frases específicas en textos, incluso cuando estas no aparecen exactamente igual.
+            </p>
+            
+            <h2>Descripción del Proyecto</h2>
+            <p>
+                Esta API implementa un sistema que detecta frases clave predefinidas dentro de mensajes de texto. 
+                Su función principal es analizar si un texto contiene ciertas frases específicas, incluso cuando 
+                estas no aparecen exactamente igual (reconoce variaciones y similitudes). Utiliza FastAPI como 
+                framework backend y OpenAI GPT para el análisis inteligente de texto.
+            </p>
+            
+            <p>
+                Esencialmente, es un "disparador" que se activa cuando encuentra coincidencias entre las frases 
+                que estás buscando y el texto que envía un usuario.
+            </p>
+            
+            <h2>Características principales ✨</h2>
+            <ul>
+                <li><strong>Detección de frases clave</strong>: Identifica frases predefinidas en el texto del usuario</li>
+                <li><strong>Búsqueda flexible</strong>: Reconoce variaciones y similitudes en las frases</li>
+                <li><strong>API RESTful</strong>: Integración sencilla con cualquier aplicación</li>
+                <li><strong>Procesamiento en tiempo real</strong>: Respuesta rápida a las solicitudes</li>
+            </ul>
+            
+            <h2>Tecnologías utilizadas 🛠️</h2>
+            <ul>
+                <li><strong>FastAPI</strong>: Framework web moderno para Python</li>
+                <li><strong>OpenAI GPT</strong>: Modelo de lenguaje para análisis de texto</li>
+                <li><strong>Pydantic</strong>: Validación de datos y definición de esquemas</li>
+                <li><strong>Uvicorn</strong>: Servidor ASGI de alto rendimiento</li>
+            </ul>
+            <h2>¿Cómo funciona? 🔍</h2>
+            
+            <div class="flow-diagram">
+                <div class="flow-step">Definición de frases clave</div>
+                <div class="flow-step">Envío de texto a analizar</div>
+                <div class="flow-step">Análisis con OpenAI</div>
+                <div class="flow-step">Respuesta con coincidencia</div>
+            </div>
+            
+            <h3>Flujo de operación detallado:</h3>
+            <ol>
+                <li>El administrador define una lista de frases clave a detectar</li>
+                <li>Un usuario envía un texto a través de la API</li>
+                <li>El sistema normaliza tanto las frases clave como el texto del usuario</li>
+                <li>Se configura OpenAI con las frases clave como posibles respuestas</li>
+                <li>Se envía el texto del usuario al modelo de OpenAI</li>
+                <li>El modelo analiza si alguna frase clave está presente en el texto</li>
+                <li>Se devuelve el resultado indicando si se detectó alguna coincidencia</li>
+            </ol>
+            <h2>Estructura del código 📁</h2>
+            
+            <p>Vamos a revisar los componentes principales del proyecto:</p>
+            
+            <h3>Esquema de datos (schemas.py)</h3>
+            <div class="code-block">
+                <span class="code-filename">schemas.py</span>
+                <pre><code>from pydantic import BaseModel
+from typing import List
+
+class TriggerRequest(BaseModel):
+    frases_clave: List[str]  # Lista de frases clave proporcionadas por el ADMIN
+    user_prompt: str  # Texto enviado por el cliente</code></pre>
+            </div>
+            
+            <h3>Punto de entrada principal (main.py)</h3>
+            <div class="code-block">
+                <span class="code-filename">main.py</span>
+                <pre><code>import uvicorn
+from fastapi import FastAPI, status
+from schemas import TriggerRequest
+from scrips import get_tools, get_weather_completion
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"Bienvendos al actuvador de texto", status.HTTP_200_OK }
+
+@app.post("/activate-trigger/")
+async def activate_text(request: TriggerRequest):
+    # Normalizar las frases clave para comparación (minúsculas y sin espacios extra)
+    frases_clave_normalizadas = [frase.lower().strip() for frase in request.frases_clave]
+    # Normalizar el texto del usuario para comparación
+    texto_usuario = request.user_prompt.lower().strip() 
+
+    # 1. Pasamos las frases clave al sistema de OpenAI y esperamos la respuesta
+    response_get = await get_tools(frases_clave_normalizadas)
+
+    # si no se obtiene respuesta de OpenAI se retorna un error y un status 500
+    if not response_get:
+        return {
+            "error": "No se pudo obtener la respuesta de OpenAI",
+            "status": status.HTTP_500_INTERNAL_SERVER_ERROR
+        }
+    
+    # 2. Si se obtiene una respuesta de la configuracion de OpenAI, se envia la respuesta 
+    # al model de openai con el texto del usuario, para detectar el disparador
+    response = await get_weather_completion(texto_usuario, response_get)
+
+    return {
+        "frases_claves": frases_clave_normalizadas,
+        "texto_del_usuario": request.user_prompt,
+        "respuesta": response,
+        "status": status.HTTP_200_OK
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.2", port=8000)</code></pre>
+            </div>
+            
+            <h3>Interacción con OpenAI (scrips.py)</h3>
+            <div class="code-block">
+                <span class="code-filename">scrips.py</span>
+                <pre><code>import openai, json, os
+from dotenv import load_dotenv
+
+load_dotenv('.env.dev')
+openai.api_key = os.getenv("API_KEY_OPENAI")
+
+# Definir herramientas/funciones con descripción precisa
+async def get_tools(arguments): # los argumentos son las frases clave
+    tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "get_confirmation",
+                "description": "Confirmación explícita de comparar usando frases específicas",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "confirmation": {
+                            "type": "string",
+                            "enum": arguments, # Lista de frases clave enviadas por el ADMIN
+                            "description": "Frase exacta de confirmación"
+                        },
+                    },
+                    "required": ["confirmation"],
+                }
+            }
+        }
+    ]
+    return tools
+
+# Función para verificar confirmaciones de compra
+def get_confirmation(confirmation, enum):
+    """Validar y procesar confirmación de compra."""
+    if confirmation.lower() in enum:
+        return f"🎉 Frase encontrada  👱🏽‍♂️ ' {confirmation} ' 👱🏽‍♂️, estado {True}"
+    else:
+        return "❌ Confirmación no válida"
+
+# Función asíncrona para manejar la solicitud de OpenAI
+async def get_weather_completion(texto_usuario, config_get_tools):
+    datos = config_get_tools[0]['function']['parameters']['properties']['confirmation']['enum']
+    
+    message = """Eres un asistente especializado en identificar intenciones basadas en frases clave. 
+    Tu tarea es: 1. Analizar si las frases clave están presentes en el mensaje del usuario 2. Realizar una búsqueda flexible que contemple: 
+    - Coincidencia parcial de palabras 
+    - Contexto de la frase 
+    Instrucciones específicas: 
+    - Si encuentras una coincidencia, confirma la detección
+    - Ignora tildes y diferencias menores en la escritura 
+    - Busca la intención aunque la frase no sea exactamente igual
+    - Si la frase no coincide, indica que no se detectó la intención
+    Ejemplo:
+    - Frases clave: {datos} - Casos válidos: * "hoy quiero sopa" * "tengo ganas de una sopa" * "Sopa, por favor" * "Sopa", Responde de manera concisa, indicando si detectaste o no la intención.')"""
+
+    try:
+        # Crear solicitud a OpenAI
+        completion = await openai.ChatCompletion.acreate(
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {
+                "role": "system",
+                "content":  message
+                }, 
+                {
+                "role": "user",
+                "content": texto_usuario
+            }],
+
+            functions=[config_get_tools[0]['function']],
+            function_call="auto", # Let the model decide
+            max_tokens=250,
+        )
+        
+        response = completion.choices[0].message
+
+        # Verificar si se llamó a la función
+        if response.get("function_call"):
+            tool_call = response["function_call"]
+
+            if tool_call["name"] == "get_confirmation":
+                args = json.loads(tool_call["arguments"])
+                # estos argumentos son los que se pasan a la función get_confirmation
+                confirmation = args.get("confirmation")
+                
+                if confirmation:
+                    # pasamos los argumentos que ya estaban en la función get_confirmation
+                    valid_confirmations = config_get_tools[0]['function']['parameters']['properties']['confirmation']['enum']
+                    result = get_confirmation(confirmation, valid_confirmations)
+                    return result
+                else:
+                    return "❌ No se proporcionaron argumentos válidos."
+
+        return False
+    except Exception as e:
+        return None</code></pre>
+            </div>
+            
+            <h2>Ejemplo de uso 📝</h2>
+            
+            <h3>Solicitud:</h3>
+            <div class="code-block">
+                <span class="code-filename">ejemplo_solicitud.py</span>
+                <pre><code>import requests
+import json
+
+url = "http://127.0.0.2:8000/activate-trigger/"
+
+payload = json.dumps({
+  "frases_clave": ["que sea sopa", "que feo arroz", "hoy no trabaje"],
+  "user_prompt": "Hoy quiero que sea sopa para el almuerzo"
+})
+headers = {
+  'Content-Type': 'application/json'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)</code></pre>
+            </div>
+            
+            <h3>Respuesta:</h3>
+            <div class="code-block">
+                <span class="code-filename">resultado.json</span>
+                <pre><code>{
+  "frases_claves": ["que sea sopa", "que feo arroz", "hoy no trabaje"],
+  "texto_del_usuario": "Hoy quiero que sea sopa para el almuerzo",
+  "respuesta": "🎉 Frase encontrada 👱🏽‍♂️ 'que sea sopa' 👱🏽‍♂️, estado True",
+  "status": 200
+}</code></pre>
+            </div>
+            
+            <h2>Aplicaciones prácticas 💼</h2>
+            
+            <p>Esta API puede ser utilizada en diversos escenarios:</p>
+            
+            <ul>
+                <li><strong>Atención al cliente automatizada</strong>: Detectar solicitudes específicas en mensajes de clientes</li>
+                <li><strong>Filtrado de contenido</strong>: Identificar frases problemáticas en comentarios o publicaciones</li>
+                <li><strong>Análisis de redes sociales</strong>: Detectar menciones de productos o servicios específicos</li>
+                <li><strong>Procesamiento de feedback</strong>: Identificar comentarios positivos o negativos en reseñas</li>
+                <li><strong>Automatización de tareas</strong>: Activar flujos de trabajo basados en frases específicas en correos o mensajes</li>
+            </ul>
+            
+            <h2>Mejoras potenciales 🚀</h2>
+            
+            <p>Algunas mejoras que planeo implementar en el futuro:</p>
+            
+            <ol>
+                <li><strong>Caché de respuestas</strong>: Implementar un sistema de caché para frases frecuentes y mejorar el rendimiento</li>
+                <li><strong>Análisis de sentimiento</strong>: Añadir detección de tono y emoción en el texto</li>
+                <li><strong>Personalización avanzada</strong>: Permitir configurar la sensibilidad de la detección</li>
+                <li><strong>Soporte multilingüe</strong>: Añadir detección en otros idiomas además del español</li>
+                <li><strong>Dashboard de análisis</strong>: Crear una interfaz para visualizar patrones de uso y estadísticas</li>
+            </ol>
+            
+            <h2>Conclusión</h2>
+            
+            <p>
+                Esta API representa una solución elegante para la detección de frases clave en textos, aprovechando 
+                la potencia de la inteligencia artificial de OpenAI. La combinación de FastAPI y GPT permite crear 
+                un sistema robusto y flexible que puede adaptarse a diversas necesidades.
+            </p>
+            
+            <p>
+                Si estás interesado en implementar esta solución o tienes preguntas sobre el proyecto, 
+                no dudes en contactarme a través de mi <a href="https://github.com/yordansolis" target="_blank">GitHub</a> 
+                o <a href="https://www.linkedin.com/in/jhordan-solis/" target="_blank">LinkedIn</a>.
+            </p>
+            
+            <blockquote>
+                "La verdadera inteligencia no está en encontrar respuestas exactas, sino en entender la intención 
+                detrás de las palabras." — Jhordan Solis
+            </blockquote>
+        </div>
+    </article>
+    <!-- Footer (se mantiene el del template) -->
+    <footer class="site-footer">
+        <div class="site-footer__content">
+          <!-- Título o logo -->
+          <h3 class="site-footer__logo">Portfolio</h3>
+          <!-- Texto descriptivo -->
+          <p class="site-footer__text">Conecta conmigo en mis redes sociales.</p>
+          <!-- Lista de enlaces sociales -->
+          <ul class="site-footer__links">
+            <li>
+              <a href="https://github.com/yordansolis" class="site-footer__social-link" target="_blank" aria-label="GitHub">
+                <!-- Ícono de GitHub -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 007.86 10.93c.57.1.78-.25.78-.56v-2.06c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.33.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.26 1.18-3.05-.12-.3-.52-1.53.12-3.2 0 0 .97-.31 3.18 1.18a11.04 11.04 0 015.78 0C17.73 3.38 18.7 3.7 18.7 3.7c.64 1.67.24 2.9.12 3.2.74.79 1.18 1.8 1.18 3.05 0 4.4-2.69 5.37-5.26 5.66.41.35.77 1.03.77 2.08v3.08c0 .31.21.67.79.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/jhordan-solis/" class="site-footer__social-link" target="_blank" aria-label="LinkedIn">
+                <!-- Ícono de LinkedIn -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.049c.476-.9 1.635-1.852 3.367-1.852 3.602 0 4.269 2.37 4.269 5.456v6.287zM5.337 7.433a2.062 2.062 0 11-.001-4.124 2.062 2.062 0 01.001 4.124zM7.114 20.452H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.554C0 23.229.792 24 1.771 24h20.451C23.207 24 24 23.229 24 22.277V1.723C24 .771 23.207 0 22.225 0z"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+          <!-- Pie de página -->
+          <p class="site-footer__copyright">
+            © 2025 Jhordan Solis. Todos los derechos reservados.
+          </p>
+        </div>
+    </footer>
+    <!-- Script para toggle del tema y menú móvil -->
+    <script src="main.js"></script>
+</body>
+</html>

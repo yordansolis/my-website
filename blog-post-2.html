@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertidor de Audio a Texto con IA | API FastAPI | Proyecto</title>
+    <meta name="description" content="Cómo crear una API para convertir audio a texto usando FastAPI y OpenAI Whisper. Proyecto completo con ejemplos de código y guía de implementación.">
+    <link rel="shortcut icon" href="icons/image.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para el artículo del blog */
+        .blog-article {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .blog-article__header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .blog-article__title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .blog-article__meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__date, 
+        .blog-article__author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .blog-article__date svg,
+        .blog-article__author svg {
+            margin-right: 5px;
+        }
+        
+        .blog-article__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .blog-article__tag {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .blog-article__body {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+        
+        .blog-article__body h2 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .blog-article__body h3 {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin: 30px 0 15px;
+        }
+        
+        .blog-article__body p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body ul,
+        .blog-article__body ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .blog-article__body li {
+            margin-bottom: 10px;
+        }
+        
+        .blog-article__body code {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .blog-article__body pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .blog-article__body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            background-color: rgba(37, 99, 235, 0.05);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .blog-article__body img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .blog-article__body .code-filename {
+            display: block;
+            padding: 8px 15px;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-bottom: -20px;
+        }
+        
+        /* Estructura de código */
+        .code-block {
+            margin-bottom: 30px;
+        }
+        
+        /* Diagrama de flujo */
+        .flow-diagram {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #4b5563;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge.blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .badge.green {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .badge.red {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        @media (max-width: 768px) {
+            .blog-article {
+                padding: 20px;
+                margin-top: 100px;
+            }
+            
+            .blog-article__title {
+                font-size: 2rem;
+            }
+            
+            .flow-diagram {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+            
+            .flow-step {
+                width: 80%;
+            }
+            
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                bottom: -30px;
+                top: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (se mantiene la del template) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#about">Sobre mí</a></li>
+                <li><a href="index.html#skills">Habilidades</a></li>
+                <li><a href="index.html#experience">Experiencia</a></li>
+                <li><a href="index.html#projects">Proyectos</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#contact">Contacto</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Artículo del Blog -->
+    <article class="blog-article">
+        <header class="blog-article__header">
+            <h1 class="blog-article__title">Convertidor de Audio a Texto con Inteligencia Artificial</h1>
+            <div class="blog-article__meta">
+                <div class="blog-article__date">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    8 de marzo, 2025
+                </div>
+                <div class="blog-article__author">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Jhordan Solis
+                </div>
+            </div>
+            <div class="blog-article__tags">
+                <span class="blog-article__tag">FastAPI</span>
+                <span class="blog-article__tag">OpenAI</span>
+                <span class="blog-article__tag">Python</span>
+                <span class="blog-article__tag">API</span>
+                <span class="blog-article__tag">Audio</span>
+            </div>
+        </header>
+        
+        <div class="blog-article__body">
+            <p>
+                En este artículo te enseñaré cómo crear una API para convertir archivos de audio a texto utilizando la potencia de la Inteligencia Artificial. El proyecto utiliza FastAPI, un moderno framework web para Python, y el modelo Whisper de OpenAI para lograr transcripciones precisas y eficientes.
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <span class="badge blue">FastAPI</span>
+                <span class="badge green">OpenAI</span>
+                <span class="badge red">Whisper</span>
+                <span class="badge blue">Python</span>
+                <span class="badge">AWS Lambda</span>
+            </div>
+
+            <h2>📝 Descripción del Proyecto</h2>
+            <p>
+                Este proyecto es una API desarrollada con FastAPI que permite convertir archivos de audio a texto utilizando el modelo Whisper de OpenAI. Esta herramienta es ideal para transcripciones automáticas de grabaciones, notas de voz, entrevistas o cualquier contenido de audio que necesites transformar en texto.
+            </p>
+            
+            <h2>✨ Características Principales</h2>
+            <ul>
+                <li>🔄 Conversión de audio a texto con alta precisión</li>
+                <li>🚀 API rápida y eficiente con FastAPI</li>
+                <li>🌍 Soporte CORS para integraciones con aplicaciones web</li>
+                <li>🔒 Manejo seguro de archivos de audio</li>
+                <li>☁️ Compatible con despliegue serverless (AWS Lambda)</li>
+            </ul>
+            
+            <h2>🧰 Tecnologías Utilizadas</h2>
+            <p>
+                Para desarrollar este proyecto, utilizamos las siguientes tecnologías:
+            </p>
+            <ul>
+                <li><strong>FastAPI</strong>: Framework web de alto rendimiento</li>
+                <li><strong>OpenAI Whisper</strong>: Modelo avanzado de reconocimiento de voz</li>
+                <li><strong>Mangum</strong>: Adaptador para facilitar el despliegue en AWS Lambda</li>
+                <li><strong>Python-dotenv</strong>: Gestión de variables de entorno</li>
+                <li><strong>CORS Middleware</strong>: Para permitir solicitudes de diferentes orígenes</li>
+            </ul>
+
+            <div class="flow-diagram">
+                <div class="flow-step">Audio</div>
+                <div class="flow-step">API (FastAPI)</div>
+                <div class="flow-step">OpenAI Whisper</div>
+                <div class="flow-step">Texto</div>
+            </div>
+            
+            <h2>📋 Requisitos Previos</h2>
+            <p>
+                Antes de empezar, asegúrate de tener:
+            </p>
+            <ul>
+                <li>Python 3.8 o superior</li>
+                <li>Cuenta en OpenAI con API Key</li>
+                <li>Pip (gestor de paquetes de Python)</li>
+            </ul>
+            
+            <h2>🚀 Instalación y Configuración</h2>
+            
+            <h3>Paso 1: Clonar el repositorio</h3>
+            <div class="code-block">
+                <span class="code-filename">Terminal</span>
+                <pre><code>git clone https://github.com/tu-usuario/convertidor-audio-texto.git
+cd convertidor-audio-texto</code></pre>
+            </div>
+            
+            <h3>Paso 2: Crear un entorno virtual</h3>
+            <div class="code-block">
+                <span class="code-filename">Terminal</span>
+                <pre><code>python -m venv venv</code></pre>
+            </div>
+            
+            <h3>Paso 3: Activar el entorno virtual</h3>
+            <div class="code-block">
+                <span class="code-filename">Terminal (Windows)</span>
+                <pre><code>venv\Scripts\activate</code></pre>
+                
+                <span class="code-filename">Terminal (macOS/Linux)</span>
+                <pre><code>source venv/bin/activate</code></pre>
+            </div>
+            
+            <h3>Paso 4: Instalar dependencias</h3>
+            <div class="code-block">
+                <span class="code-filename">Terminal</span>
+                <pre><code>pip install -r requirements.txt</code></pre>
+            </div>
+            
+            <h3>Paso 5: Configurar variables de entorno</h3>
+            <p>
+                Crea un archivo <code>.env.dev</code> en la raíz del proyecto con el siguiente contenido:
+            </p>
+            <div class="code-block">
+                <span class="code-filename">.env.dev</span>
+                <pre><code>OPENAI.API_KEY=tu_api_key_de_openai</code></pre>
+            </div>
+            
+            <h2>💻 Código del Proyecto</h2>
+            <p>
+                A continuación se muestra el código completo de la API:
+            </p>
+            
+            <div class="code-block">
+                <span class="code-filename">main.py</span>
+                <pre><code>from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import Optional
+import openai
+from fastapi.responses import JSONResponse
+from starlette.status import HTTP_200_OK
+import logging
+from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
+import io
+import os
+
+load_dotenv('.env.dev')
+openai.api_key = os.getenv("OPENAI.API_KEY")
+
+# Tamaño máximo permitido en MB
+MAX_AUDIO_SIZE_MB = 5 
+MAX_AUDIO_SIZE_BYTES = MAX_AUDIO_SIZE_MB * 1024 * 1024  # Convertido a bytes
+
+app = FastAPI(
+    title="Convertidor de Audio a Texto",
+    description="API para convertir audio a texto"
+)
+
+# Configura CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+async def root():
+    return {"hello ✔": "Audio to text converter"}
+
+@app.post("/audio")
+async def chat(audio: Optional[UploadFile] = File(...)):
+    print("recibiendo el nombre del audio... ", audio.filename)
+    if not audio:
+        raise HTTPException(status_code=400, detail="Debe proporcionar un archivo de audio")
+    
+    # Leemos el contenido del archivo de audio
+    audio_content = await audio.read()
+    try:
+        # Creamos un archivo en memoria usando io.BytesIO para simular un archivo
+        audio_file = io.BytesIO(audio_content)
+        audio_file.name = audio.filename
+        
+        # Convertimos el audio a texto utilizando OpenAI
+        response = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio_file
+        )
+        
+        # Preparamos la respuesta con el texto transcrito y el status code
+        responde = {
+            "text": response['text'],
+            "status": HTTP_200_OK
+        }
+        
+        # Retornamos la respuesta en formato JSON con el status code
+        return JSONResponse(content=responde, status_code=HTTP_200_OK)
+    except Exception as e:
+        logging.error(f"Error durante la transcripción: {e}")
+        raise HTTPException(status_code=500, detail="Error en la transcripción del audio.")
+
+# Configuración para AWS Lambda
+handler = Mangum(app, lifespan="off")</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-filename">requirements.txt</span>
+                <pre><code>fastapi==0.99.0
+mangum==0.14.0
+uvicorn==0.23.0
+openai==0.28.0
+lxml==4.9.0
+python-dotenv==1.0.1
+openai==0.28.0
+python-multipart==0.0.9</code></pre>
+            </div>
+            
+            <h2>🔧 Uso de la API</h2>
+            
+            <h3>Iniciar el servidor localmente</h3>
+            <div class="code-block">
+                <span class="code-filename">Terminal</span>
+                <pre><code>uvicorn main:app --reload</code></pre>
+            </div>
+            <p>
+                El servidor estará disponible en <code>http://localhost:8000</code>
+            </p>
+            
+            <h3>Endpoints</h3>
+            
+            <h4>GET /</h4>
+            <p>
+                Endpoint de prueba para verificar que el servicio está funcionando.
+            </p>
+            <div class="code-block">
+                <span class="code-filename">Respuesta</span>
+                <pre><code>{
+  "hello ✔": "Audio to text converter"
+}</code></pre>
+            </div>
+            
+            <h4>POST /audio</h4>
+            <p>
+                Convierte un archivo de audio a texto.
+            </p>
+            <p>
+                <strong>Parámetros</strong>:
+            </p>
+            <ul>
+                <li><code>audio</code>: Archivo de audio (máximo 5MB)</li>
+            </ul>
+            
+            <p>
+                <strong>Ejemplo de solicitud usando curl</strong>:
+            </p>
+            <div class="code-block">
+                <span class="code-filename">Terminal</span>
+                <pre><code>curl -X POST "http://localhost:8000/audio" \
+  -H "accept: application/json" \
+  -H "Content-Type: multipart/form-data" \
+  -F "audio=@tu_archivo_audio.mp3"</code></pre>
+            </div>
+            
+            <p>
+                <strong>Respuesta exitosa</strong>:
+            </p>
+            <div class="code-block">
+                <span class="code-filename">JSON</span>
+                <pre><code>{
+  "text": "Texto transcrito del audio...",
+  "status": 200
+}</code></pre>
+            </div>
+            
+            <h3>Documentación de la API</h3>
+            <p>
+                FastAPI genera automáticamente la documentación de la API. Puedes acceder a:
+            </p>
+            <ul>
+                <li>Swagger UI: <code>http://localhost:8000/docs</code></li>
+                <li>ReDoc: <code>http://localhost:8000/redoc</code></li>
+            </ul>
+            
+            <h2>🔍 Limitaciones</h2>
+            <ul>
+                <li>Tamaño máximo de archivo de audio: 5MB</li>
+                <li>Formatos de audio soportados: MP3, M4A, WAV, MPG, MPEG, WEBM</li>
+            </ul>
+             
+            <h2>🚀 Despliegue en la Nube</h2>
+            <p>
+                Este proyecto está diseñado para ser desplegado fácilmente en AWS Lambda gracias a Mangum. Esta integración nos permite crear un servicio serverless completamente escalable sin preocuparnos por la infraestructura.
+            </p>
+            
+            <h3>Pasos para el despliegue en AWS Lambda</h3>
+            <ol>
+                <li>
+                    <strong>Empaquetar la aplicación</strong>
+                    <p>Para crear un paquete de despliegue adecuado para AWS Lambda, sigue estos pasos:</p>
+                    <div class="code-block">
+                        <span class="code-filename">Terminal</span>
+                        <pre><code># Crear directorio para el paquete
+mkdir -p deployment/package
+
+# Instalar dependencias en el directorio de despliegue
+pip install -r requirements.txt -t deployment/package/
+
+# Copiar el archivo principal
+cp main.py deployment/package/
+
+# Crear el archivo ZIP para Lambda
+cd deployment/package/
+zip -r ../lambda_deployment.zip .
+cd ../..</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>Configurar un API Gateway</strong>
+                    <p>En la consola de AWS:</p>
+                    <ul>
+                        <li>Crea un nuevo API Gateway REST API</li>
+                        <li>Configura métodos GET y POST con integración a tu función Lambda</li>
+                        <li>Habilita CORS si es necesario para integraciones web</li>
+                        <li>Despliega la API y anota la URL generada</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Configurar variables de entorno</strong>
+                    <p>En la sección de configuración de tu función Lambda:</p>
+                    <ul>
+                        <li>Añade la variable <code>OPENAI.API_KEY</code> con tu clave de API de OpenAI</li>
+                        <li>Configura el tiempo de espera adecuado (recomendado: 30 segundos)</li>
+                        <li>Ajusta la memoria asignada según tus necesidades (mínimo recomendado: 256MB)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Definir el handler</strong>
+                    <p>En la configuración de AWS Lambda, establece el handler como <code>main.handler</code>. Este es el punto de entrada que Mangum ha configurado para comunicar API Gateway con tu aplicación FastAPI.</p>
+                </li>
+                <li>
+                    <strong>Prueba el despliegue</strong>
+                    <p>Una vez desplegada tu API, puedes probarla con curl:</p>
+                    <div class="code-block">
+                        <span class="code-filename">Terminal</span>
+                        <pre><code>curl -X POST "https://tu-api-id.execute-api.tu-region.amazonaws.com/prod/audio" \
+  -H "Content-Type: multipart/form-data" \
+  -F "audio=@ejemplo.mp3"</code></pre>
+                    </div>
+                </li>
+            </ol>
+            
+            <h3>Consideraciones para el despliegue en producción</h3>
+            <p>
+                Para un entorno de producción, considera estas mejoras adicionales:
+            </p>
+            <ul>
+                <li><strong>Autenticación</strong>: Implementa un sistema de autenticación API Key o JWT</li>
+                <li><strong>Límites de tamaño</strong>: Configura API Gateway para aceptar archivos de mayor tamaño si es necesario</li>
+                <li><strong>Caché</strong>: Configura caché en API Gateway para respuestas repetidas</li>
+                <li><strong>Monitoreo</strong>: Configura CloudWatch para monitorear el uso y errores de la API</li>
+                <li><strong>Dominio personalizado</strong>: Configura un dominio personalizado para tu API</li>
+            </ul>
+            
+            <h2>📦 Estructura del Proyecto</h2>
+            <div class="code-block">
+                <pre><code>convertidor-audio-texto/
+├── main.py            # Archivo principal con la API
+├── requirements.txt   # Dependencias del proyecto
+├── .env.dev           # Variables de entorno para desarrollo
+├── deployment/        # Directorio para archivos de despliegue
+│   └── package/       # Paquete para Lambda
+│       └── lambda_deployment.zip  # Archivo ZIP para despliegue
+└── README.md          # Documentación</code></pre>
+            </div>
+            
+            <h2>🔍 Casos de uso reales</h2>
+            <p>
+                Este convertidor de audio a texto puede aplicarse en numerosos escenarios:
+            </p>
+            <ul>
+                <li><strong>Transcripción de entrevistas</strong>: Automatiza la transcripción de entrevistas de investigación o periodísticas</li>
+                <li><strong>Notas de voz</strong>: Convierte notas de voz de aplicaciones móviles en texto para facilitar su búsqueda y organización</li>
+                <li><strong>Contenido para podcasts</strong>: Genera transcripciones automáticas para mejorar la accesibilidad y el SEO de podcasts</li>
+                <li><strong>Subtitulado automático</strong>: Crea subtítulos para vídeos a partir del audio</li>
+                <li><strong>Análisis de llamadas</strong>: Transcribe llamadas de servicio al cliente para análisis posterior</li>
+            </ul>
+            
+            <h2>🧩 Personalización y extensiones</h2>
+            <p>
+                Aquí hay algunas formas de personalizar o extender este proyecto:
+            </p>
+            <ul>
+                <li><strong>Soporte multiidioma</strong>: Añade parámetros para especificar el idioma del audio</li>
+                <li><strong>Detección de hablantes</strong>: Implementa identificación de diferentes hablantes en la conversación</li>
+                <li><strong>Procesamiento de texto</strong>: Añade análisis de sentimiento o extracción de palabras clave del texto resultante</li>
+                <li><strong>Traducción</strong>: Combina con APIs de traducción para convertir el texto a otros idiomas</li>
+                <li><strong>Interfaz web</strong>: Desarrolla una interfaz de usuario amigable para subir archivos y visualizar transcripciones</li>
+            </ul>
+            
+            <h2>📚 Conclusión</h2>
+            <p>
+                En este artículo, hemos explorado cómo crear una API robusta para convertir audio a texto utilizando FastAPI y el modelo Whisper de OpenAI. Esta herramienta puede ser integrada en diversas aplicaciones que requieran transcripción de audio, desde aplicaciones de notas de voz hasta sistemas de transcripción de entrevistas.
+            </p>
+            <p>
+                El uso de FastAPI nos proporciona un rendimiento excepcional y una experiencia de desarrollo agradable, mientras que OpenAI Whisper ofrece un reconocimiento de voz de alta calidad con soporte para múltiples idiomas. Además, gracias a Mangum, la API puede desplegarse fácilmente en un entorno serverless como AWS Lambda, permitiendo una escalabilidad prácticamente ilimitada sin preocuparse por la infraestructura.
+            </p>
+            <p>
+                Las posibilidades de aplicación de esta tecnología son enormes y continuarán expandiéndose a medida que los modelos de IA para reconocimiento de voz sigan mejorando. Te animo a experimentar con este proyecto, adaptarlo a tus necesidades específicas y explorar nuevas formas de aprovechar la potencia de la IA para trabajar con contenido de audio.
+            </p>
+            <p>
+                ¿Tienes alguna pregunta o comentario sobre este proyecto? ¿O tal vez ideas para mejorarlo? ¡No dudes en contactarme a través de mis redes sociales o dejar un comentario más abajo!
+            </p>
+                        
+            <p>
+                Si estás interesado en implementar esta solución o tienes preguntas sobre el proyecto, 
+                no dudes en contactarme a través de mi <a href="https://github.com/yordansolis" target="_blank">GitHub</a> 
+                o <a href="https://www.linkedin.com/in/jhordan-solis/" target="_blank">LinkedIn</a>.
+            </p>
+            <blockquote>
+                Desarrollado con ❤️ usando FastAPI y OpenAI Whisper
+            </blockquote>
+        </div>
+    </article>
+
+    <!-- Footer (se mantiene el del template) -->
+    <footer class="site-footer">
+        <div class="site-footer__content">
+          <!-- Título o logo -->
+          <h3 class="site-footer__logo">Portfolio</h3>
+          <!-- Texto descriptivo -->
+          <p class="site-footer__text">Conecta conmigo en mis redes sociales.</p>
+          <!-- Lista de enlaces sociales -->
+          <ul class="site-footer__links">
+            <li>
+              <a href="https://github.com/yordansolis" class="site-footer__social-link" target="_blank" aria-label="GitHub">
+                <!-- Ícono de GitHub -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 007.86 10.93c.57.1.78-.25.78-.56v-2.06c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.33.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.26 1.18-3.05-.12-.3-.52-1.53.12-3.2 0 0 .97-.31 3.18 1.18a11.04 11.04 0 015.78 0C17.73 3.38 18.7 3.7 18.7 3.7c.64 1.67.24 2.9.12 3.2.74.79 1.18 1.8 1.18 3.05 0 4.4-2.69 5.37-5.26 5.66.41.35.77 1.03.77 2.08v3.08c0 .31.21.67.79.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/jhordan-solis/" class="site-footer__social-link" target="_blank" aria-label="LinkedIn">
+                <!-- Ícono de LinkedIn -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.049c.476-.9 1.635-1.852 3.367-1.852 3.602 0 4.269 2.37 4.269 5.456v6.287zM5.337 7.433a2.062 2.062 0 11-.001-4.124 2.062 2.062 0 01.001 4.124zM7.114 20.452H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.554C0 23.229.792 24 1.771 24h20.451C23.207 24 24 23.229 24 22.277V1.723C24 .771 23.207 0 22.225 0z"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+          <!-- Pie de página -->
+          <p class="site-footer__copyright">
+            © 2025 Jhordan Solis. Todos los derechos reservados.
+          </p>
+        </div>
+    </footer>
+    <!-- Script para toggle del tema y menú móvil -->
+    <script src="main.js"></script>
+</body>
+</html>

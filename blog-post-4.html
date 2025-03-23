@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Procesamiento de Documentos con IA | FastAPI | Proyecto</title>
+    <link rel="shortcut icon" href="icons/image.png" type="image/x-icon">
+
+    <meta name="description" content="Cómo crear una API para procesar documentos PDF, Word y Excel usando FastAPI y OpenAI. Proyecto completo con ejemplos de código y guía de implementación.">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para el artículo del blog */
+        .blog-article {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .blog-article__header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .blog-article__title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .blog-article__meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__date, 
+        .blog-article__author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .blog-article__date svg,
+        .blog-article__author svg {
+            margin-right: 5px;
+        }
+        
+        .blog-article__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .blog-article__tag {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .blog-article__body {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+        
+        .blog-article__body h2 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .blog-article__body h3 {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin: 30px 0 15px;
+        }
+        
+        .blog-article__body p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body ul,
+        .blog-article__body ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .blog-article__body li {
+            margin-bottom: 10px;
+        }
+        
+        .blog-article__body code {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .blog-article__body pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin-bottom: 20px;
+        }
+        
+        .blog-article__body pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .blog-article__body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            background-color: rgba(37, 99, 235, 0.05);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .blog-article__body img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .blog-article__body .code-filename {
+            display: block;
+            padding: 8px 15px;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-bottom: -20px;
+        }
+        
+        /* Estructura de código */
+        .code-block {
+            margin-bottom: 30px;
+        }
+        
+        /* Diagrama de flujo */
+        .flow-diagram {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #4b5563;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge.blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .badge.green {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .badge.red {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        @media (max-width: 768px) {
+            .blog-article {
+                padding: 20px;
+                margin-top: 100px;
+            }
+            
+            .blog-article__title {
+                font-size: 2rem;
+            }
+            
+            .flow-diagram {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+            
+            .flow-step {
+                width: 80%;
+            }
+            
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                bottom: -30px;
+                top: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (se mantiene la del template) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#about">Sobre mí</a></li>
+                <li><a href="index.html#skills">Habilidades</a></li>
+                <li><a href="index.html#experience">Experiencia</a></li>
+                <li><a href="index.html#projects">Proyectos</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#contact">Contacto</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Artículo del Blog -->
+    <article class="blog-article">
+        <header class="blog-article__header">
+            <h1 class="blog-article__title">API de Procesamiento de Documentos con Inteligencia Artificial</h1>
+            <div class="blog-article__meta">
+                <div class="blog-article__date">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Marzo 8, 2025
+                </div>
+                <div class="blog-article__author">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Jhordan Solis
+                </div>
+            </div>
+            <div class="blog-article__tags">
+                <span class="blog-article__tag">FastAPI</span>
+                <span class="blog-article__tag">OpenAI</span>
+                <span class="blog-article__tag">API</span>
+                <span class="blog-article__tag">Python</span>
+                <span class="blog-article__tag">IA</span>
+            </div>
+        </header>
+        
+        <div class="blog-article__body">
+            <p>
+                En este artículo, te mostraré cómo he creado una API para procesar automáticamente documentos PDF, Word (DOCX) y Excel utilizando inteligencia artificial a través de OpenAI. Esta solución te permitirá extraer y analizar texto de diversos formatos de documentos con la potencia de los modelos de lenguaje de OpenAI.
+            </p>
+            
+            <h2>📄 ¿Qué hace nuestra API?</h2>
+            <p>
+                Esta API permite procesar archivos en diferentes formatos (PDF, DOCX, Excel) y utiliza la tecnología de OpenAI para analizar su contenido. Es ideal para:
+            </p>
+            <ul>
+                <li>Extraer información relevante de documentos extensos</li>
+                <li>Resumir automáticamente contenido de documentos</li>
+                <li>Clasificar o categorizar documentos basados en su contenido</li>
+                <li>Responder preguntas basadas en el contenido de los documentos</li>
+            </ul>
+            
+            <div class="flow-diagram">
+                <div class="flow-step">Subir documento</div>
+                <div class="flow-step">Extraer texto</div>
+                <div class="flow-step">Procesar con IA</div>
+                <div class="flow-step">Recibir análisis</div>
+            </div>
+            
+            <h2>✨ Características principales</h2>
+            <p>Nuestra API ofrece las siguientes funcionalidades:</p>
+            <div>
+                <span class="badge blue">Múltiples formatos</span>
+                <span class="badge blue">Procesamiento inteligente</span>
+                <span class="badge blue">API RESTful</span>
+                <span class="badge blue">Alto rendimiento</span>
+                <span class="badge blue">Fácil integración</span>
+            </div>
+            
+            <ul>
+                <li><strong>Soporte para múltiples formatos de archivos:</strong> Documentos PDF, Word (DOCX) y hojas de cálculo Excel (XLS/XLSX)</li>
+                <li><strong>Procesamiento inteligente con OpenAI:</strong> Utilizamos el modelo GPT-4 para analizar el contenido extraído</li>
+                <li><strong>API RESTful:</strong> Fácil de integrar en cualquier aplicación</li>
+                <li><strong>Implementado con FastAPI:</strong> Para un alto rendimiento y documentación automática</li>
+            </ul>
+            
+            <h2>🛠️ Tecnologías utilizadas</h2>
+            <p>
+                Este proyecto utiliza las siguientes tecnologías y librerías:
+            </p>
+            <ul>
+                <li><strong>FastAPI:</strong> Framework moderno para crear APIs en Python</li>
+                <li><strong>OpenAI:</strong> Para el procesamiento y análisis de texto con IA</li>
+                <li><strong>PyPDF2:</strong> Para extraer texto de archivos PDF</li>
+                <li><strong>python-docx:</strong> Para leer documentos de Word</li>
+                <li><strong>pandas:</strong> Para procesar archivos Excel</li>
+                <li><strong>uvicorn:</strong> Servidor ASGI de alto rendimiento</li>
+            </ul>
+            
+            <h2>💻 Código del proyecto</h2>
+            <p>A continuación, veremos las partes más importantes del código de nuestra API:</p>
+            
+            <div class="code-block">
+                <span class="code-filename">main.py</span>
+                <pre><code>import openai
+import PyPDF2
+import docx
+import pandas as pd
+from fastapi import FastAPI, File, UploadFile
+from io import BytesIO
+import uvicorn
+
+# Configura tu clave API de OpenAI
+openai.api_key = 'tu_clave_api'  # Reemplaza 'tu_clave_api' por tu clave API de OpenAI
+
+# Crea la aplicación FastAPI
+app = FastAPI()
+
+# Función para leer archivos PDF
+def leer_pdf(file: BytesIO):
+    reader = PyPDF2.PdfReader(file)
+    texto = ""
+    for pagina in range(len(reader.pages)):
+        texto += reader.pages[pagina].extract_text()
+    return texto
+
+# Función para leer archivos DOCX
+def leer_docx(file: BytesIO):
+    doc = docx.Document(file)
+    texto = ""
+    for para in doc.paragraphs:
+        texto += para.text + "\n"
+    return texto
+
+# Función para leer archivos Excel (solo el contenido de las celdas)
+def leer_excel(file: BytesIO):
+    df = pd.read_excel(file)
+    texto = df.to_string(index=False)
+    return texto
+
+# Función para procesar texto con OpenAI utilizando el endpoint de chat
+def procesar_con_openai(texto):
+    # Llamada a la API de OpenAI para procesar el texto con un modelo de chat
+    response = openai.ChatCompletion.create(
+        model="gpt-4",  # Usa el modelo adecuado, por ejemplo, "gpt-4"
+        messages=[
+            {"role": "system", "content": "Eres un asistente que ayuda a procesar documentos."},
+            {"role": "user", "content": texto}
+        ],
+        max_tokens=1500  # Ajusta la cantidad de tokens según lo necesario
+    )
+    return response['choices'][0]['message']['content'].strip()
+
+# Endpoint para recibir archivos y procesarlos
+@app.post("/procesar_archivo/")
+async def procesar_archivo(file: UploadFile = File(...)):
+    # Obtener el nombre del archivo y su extensión
+    extension = file.filename.split('.')[-1].lower()
+    
+    # Leer el archivo según su tipo
+    contenido = await file.read()
+    archivo = BytesIO(contenido)
+    
+    if extension == 'pdf':
+        texto = leer_pdf(archivo)
+    elif extension == 'docx':
+        texto = leer_docx(archivo)
+    elif extension in ['xls', 'xlsx']:
+        texto = leer_excel(archivo)
+    else:
+        return {"error": "Formato de archivo no soportado."}
+    
+    # Enviar el texto a OpenAI para que lo procese
+    resultado = procesar_con_openai(texto)
+    
+    return {"texto_procesado": resultado}
+
+# Iniciar el servidor
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+</code></pre>
+            </div>
+            
+            <h2>🚀 Instalación y configuración</h2>
+            <p>
+                Para implementar este proyecto, sigue estos pasos:
+            </p>
+            
+            <h3>1. Requisitos previos</h3>
+            <p>Asegúrate de tener Python 3.8+ instalado en tu sistema. Luego, crea un archivo <code>requirements.txt</code> con las siguientes dependencias:</p>
+            
+            <div class="code-block">
+                <span class="code-filename">requirements.txt</span>
+                <pre><code>fastapi==0.115.6
+pandas==2.2.3
+PyPDF2==3.0.1
+uvicorn==0.34.0
+openai==0.28
+python-docx
+python-multipart</code></pre>
+            </div>
+            
+            <h3>2. Instalación de dependencias</h3>
+            <p>Instala todas las dependencias necesarias con pip:</p>
+            
+            <div class="code-block">
+                <pre><code>pip install -r requirements.txt</code></pre>
+            </div>
+            
+            <h3>3. Configuración de OpenAI</h3>
+            <p>
+                Reemplaza <code>'tu_clave_api'</code> en el código con tu clave API real de OpenAI. 
+                Por seguridad, es mejor usar variables de entorno para esto:
+            </p>
+            
+            <div class="code-block">
+                <pre><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Carga variables desde .env
+openai.api_key = os.getenv("OPENAI_API_KEY")</code></pre>
+            </div>
+            
+            <h2>▶️ Cómo usar la API</h2>
+            <p>Una vez configurado todo, puedes iniciar el servidor con:</p>
+            
+            <div class="code-block">
+                <pre><code>uvicorn main:app --host localhost --port 8081 --reload</code></pre>
+            </div>
+            
+            <h3>Ejemplo de uso con Python:</h3>
+            
+            <div class="code-block">
+                <span class="code-filename">ejemplo_cliente.py</span>
+                <pre><code>import requests
+
+url = "http://localhost:8081/procesar_archivo/"
+archivo = "documento_ejemplo.pdf"  # Cambia esto al archivo que quieras procesar
+
+with open(archivo, "rb") as f:
+    files = {"file": (archivo, f, "application/pdf")}
+    response = requests.post(url, files=files)
+
+if response.status_code == 200:
+    resultado = response.json()
+    print("Texto procesado:", resultado["texto_procesado"])
+else:
+    print(f"Error: {response.status_code}")
+    print(response.text)</code></pre>
+            </div>
+            
+            <h2>🔍 Cómo funciona</h2>
+            <p>El funcionamiento de nuestra API se puede resumir en cuatro pasos clave:</p>
+            
+            <ol>
+                <li>
+                    <strong>Recepción del archivo:</strong> 
+                    El usuario envía un archivo a través del endpoint <code>/procesar_archivo/</code>.
+                </li>
+                <li>
+                    <strong>Extracción de texto:</strong> 
+                    Dependiendo del formato del archivo, utilizamos diferentes bibliotecas para extraer el texto contenido:
+                    <ul>
+                        <li>Para PDFs: Utilizamos PyPDF2 para extraer el texto de todas las páginas.</li>
+                        <li>Para DOCX: Utilizamos python-docx para extraer el texto de todos los párrafos.</li>
+                        <li>Para Excel: Convertimos las celdas en texto formateado usando pandas.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Procesamiento con IA:</strong> 
+                    El texto extraído se envía a OpenAI (GPT-4) para su procesamiento.
+                </li>
+                <li>
+                    <strong>Devolución del resultado:</strong> 
+                    La API devuelve el texto procesado por la IA en formato JSON.
+                </li>
+            </ol>
+            
+            <h2>⚙️ Personalización</h2>
+            <p>
+                Este proyecto es altamente personalizable. Puedes adaptarlo a tus necesidades específicas:
+            </p>
+            
+        <!-- Continuación de la documentación desde "Modificar el comportamiento de la IA" -->
+
+<div class="code-block">
+    <pre><code>def procesar_con_openai(texto):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "Eres un asistente especializado en resumir documentos legales. Extrae los puntos clave y resume el contenido en formato de lista."},
+            {"role": "user", "content": texto}
+        ],
+        max_tokens=1500
+    )
+    return response['choices'][0]['message']['content'].strip()</code></pre>
+</div>
+
+<h3>Añadir soporte para más formatos</h3>
+<p>
+    Puedes extender la API para soportar más formatos de archivo añadiendo nuevas funciones de lectura. Por ejemplo, para añadir soporte para archivos CSV:
+</p>
+
+<div class="code-block">
+    <pre><code>def leer_csv(file: BytesIO):
+    df = pd.read_csv(file)
+    texto = df.to_string(index=False)
+    return texto
+
+# Y luego en el endpoint:
+elif extension == 'csv':
+    texto = leer_csv(archivo)</code></pre>
+</div>
+
+<h3>Implementar estrategias para documentos grandes</h3>
+<p>
+    Para procesar documentos muy grandes que exceden los límites de tokens de OpenAI, puedes implementar una estrategia de fragmentación:
+</p>
+
+<div class="code-block">
+    <pre><code>def procesar_documento_grande(texto, max_chunk_size=4000):
+    # Dividir el texto en fragmentos más pequeños
+    chunks = [texto[i:i+max_chunk_size] for i in range(0, len(texto), max_chunk_size)]
+    
+    resultados = []
+    for chunk in chunks:
+        # Procesar cada fragmento individualmente
+        resultado_chunk = procesar_con_openai(chunk)
+        resultados.append(resultado_chunk)
+    
+    # Combinar los resultados o realizar un procesamiento adicional si es necesario
+    resultado_final = "\n\n".join(resultados)
+    
+    # Opcionalmente, hacer un resumen final de todos los fragmentos
+    if len(resultados) > 1:
+        resumen = procesar_con_openai("Resume los siguientes resultados:\n" + resultado_final)
+        return resumen
+    
+    return resultado_final</code></pre>
+</div>
+
+<h2>🔒 Seguridad y buenas prácticas</h2>
+
+<h3>Proteger la clave API</h3>
+<p>
+    Como mencionamos anteriormente, nunca debes incluir directamente tu clave API en el código. Utiliza variables de entorno:
+</p>
+
+<div class="code-block">
+    <pre><code># Crear un archivo .env
+OPENAI_API_KEY=tu_clave_api_real
+
+# En tu código principal
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")</code></pre>
+</div>
+
+<h3>Manejar casos de error</h3>
+<p>
+    Es importante implementar un manejo de errores adecuado para mejorar la robustez de tu API:
+</p>
+
+<div class="code-block">
+    <pre><code>@app.post("/procesar_archivo/")
+async def procesar_archivo(file: UploadFile = File(...)):
+    try:
+        # Verificar si se proporcionó un archivo
+        if not file:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No se proporcionó ningún archivo"
+            )
+        
+        # Verificar el tamaño del archivo (por ejemplo, límite de 10MB)
+        MAX_SIZE = 10 * 1024 * 1024  # 10MB
+        file_size = 0
+        contenido = BytesIO()
+        
+        # Leer el archivo en chunks para controlar el tamaño
+        chunk = await file.read(1024)
+        while chunk:
+            file_size += len(chunk)
+            if file_size > MAX_SIZE:
+                raise HTTPException(
+                    status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                    detail=f"El tamaño del archivo excede el límite de {MAX_SIZE/1024/1024}MB"
+                )
+            contenido.write(chunk)
+            chunk = await file.read(1024)
+        
+        contenido.seek(0)
+        
+        # Verificar la extensión
+        extension = file.filename.split('.')[-1].lower()
+        if extension not in ['pdf', 'docx', 'xlsx', 'xls']:
+            raise HTTPException(
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail=f"Formato de archivo no soportado: {extension}"
+            )
+        
+        # Continuar con el procesamiento normal...
+        
+    except Exception as e:
+        # Capturar cualquier otra excepción
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al procesar el archivo: {str(e)}"
+        )</code></pre>
+</div>
+
+
+
+<h2>🚢 Despliegue en producción</h2>
+<p>
+    Para desplegar esta API en un entorno de producción, tienes varias opciones:
+</p>
+
+<h3>Despliegue con Docker</h3>
+<p>
+    Puedes utilizar Docker para containerizar tu aplicación:
+</p>
+
+<div class="code-block">
+    <span class="code-filename">Dockerfile</span>
+    <pre><code>FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+</div>
+
+<p>Para construir y ejecutar el contenedor:</p>
+
+<div class="code-block">
+    <pre><code>docker build -t document-processor-api .
+docker run -p 8000:8000 -e OPENAI_API_KEY=tu_clave_api document-processor-api</code></pre>
+</div>
+
+<h3>Despliegue en plataformas en la nube</h3>
+<p>
+    Esta API se puede desplegar fácilmente en plataformas como:
+</p>
+
+<ul>
+    <li><strong>Heroku:</strong> Soporta aplicaciones Python y puede ser configurado con Procfile</li>
+    <li><strong>AWS Elastic Beanstalk:</strong> Soporta despliegue de contenedores Docker</li>
+    <li><strong>Google Cloud Run:</strong> Ideal para APIs con Docker que responden a solicitudes HTTP</li>
+    <li><strong>Azure App Service:</strong> Proporciona despliegue sencillo para aplicaciones Python</li>
+</ul>
+
+</ul>
+
+<h2>📝 Conclusión</h2>
+<p>
+    Esta API de procesamiento de documentos con IA demuestra cómo podemos combinar diferentes tecnologías para crear una herramienta útil que automatice el análisis de documentos. Las posibilidades de aplicación son enormes: desde el análisis legal de contratos hasta el procesamiento de informes médicos o financieros.
+</p>
+
+<p>
+    El proyecto es altamente personalizable y puede adaptarse a una amplia variedad de casos de uso. Te animo a experimentar con diferentes modelos de OpenAI y personalizar las instrucciones del sistema para adaptarlas a tus necesidades específicas.
+</p>
+<p>
+    Si estás interesado en implementar esta solución o tienes preguntas sobre el proyecto, 
+    no dudes en contactarme a través de mi <a href="https://github.com/yordansolis" target="_blank">GitHub</a> 
+    o <a href="https://www.linkedin.com/in/jhordan-solis/" target="_blank">LinkedIn</a>.
+</p>
+
+<blockquote>
+    "La automatización inteligente no reemplaza la inteligencia humana, sino que la potencia 
+    liberándola de tareas repetitivas para centrarse en lo verdaderamente creativo." — Jhordan Solis
+</blockquote>
+</div>
+</article>
+
+
+
+
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="site-footer__content">
+      <!-- Título o logo -->
+      <h3 class="site-footer__logo">Portfolio</h3>
+      <!-- Texto descriptivo -->
+      <p class="site-footer__text">Conecta conmigo en mis redes sociales.</p>
+      <!-- Lista de enlaces sociales -->
+      <ul class="site-footer__links">
+        <li>
+          <a href="https://github.com/yordansolis" class="site-footer__social-link" target="_blank" aria-label="GitHub">
+            <!-- Ícono de GitHub -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 007.86 10.93c.57.1.78-.25.78-.56v-2.06c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.33.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.26 1.18-3.05-.12-.3-.52-1.53.12-3.2 0 0 .97-.31 3.18 1.18a11.04 11.04 0 015.78 0C17.73 3.38 18.7 3.7 18.7 3.7c.64 1.67.24 2.9.12 3.2.74.79 1.18 1.8 1.18 3.05 0 4.4-2.69 5.37-5.26 5.66.41.35.77 1.03.77 2.08v3.08c0 .31.21.67.79.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/jhordan-solis/" class="site-footer__social-link" target="_blank" aria-label="LinkedIn">
+            <!-- Ícono de LinkedIn -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.049c.476-.9 1.635-1.852 3.367-1.852 3.602 0 4.269 2.37 4.269 5.456v6.287zM5.337 7.433a2.062 2.062 0 11-.001-4.124 2.062 2.062 0 01.001 4.124zM7.114 20.452H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.554C0 23.229.792 24 1.771 24h20.451C23.207 24 24 23.229 24 22.277V1.723C24 .771 23.207 0 22.225 0z"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <!-- Pie de página -->
+      <p class="site-footer__copyright">
+        © 2025 Jhordan Solis. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+  
+<script src="main.js"></script>
+
+
+</body>
+</html>
