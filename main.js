@@ -14,14 +14,16 @@
     // Función para cargar el tema desde localStorage
     function loadTheme() {
       const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-      } else {
+      if (savedTheme === 'light') {
         document.documentElement.removeAttribute('data-theme');
         sunIcon.style.display = 'block';
         moonIcon.style.display = 'none';
+      } else {
+        // Por defecto, iniciamos en modo oscuro
+        document.documentElement.setAttribute('data-theme', 'dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        saveTheme('dark');
       }
     }
 
