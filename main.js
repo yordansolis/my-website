@@ -6,6 +6,25 @@
     const sunIcon = themeToggle.querySelector(".sun-icon");
     const moonIcon = themeToggle.querySelector(".moon-icon");
 
+    // Función para guardar el tema en localStorage
+    function saveTheme(theme) {
+      localStorage.setItem('theme', theme);
+    }
+
+    // Función para cargar el tema desde localStorage
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    }
+
     // Función para alternar el tema oscuro
     function toggleTheme() {
       // Si el atributo 'data-theme' del documento es 'dark', se remueve para volver al modo claro
@@ -14,14 +33,22 @@
         // Se muestra el ícono de sol y se oculta el de luna
         sunIcon.style.display = "block";
         moonIcon.style.display = "none";
+        // Guardamos el tema claro en localStorage
+        saveTheme('light');
       } else {
         // Se activa el modo oscuro asignando 'data-theme' con valor 'dark'
         document.documentElement.setAttribute("data-theme", "dark");
         // Se muestra el ícono de luna y se oculta el de sol
         sunIcon.style.display = "none";
         moonIcon.style.display = "block";
+        // Guardamos el tema oscuro en localStorage
+        saveTheme('dark');
       }
     }
+
+    // Cargamos el tema guardado al iniciar la página
+    document.addEventListener('DOMContentLoaded', loadTheme);
+
     // Se asigna el event listener al botón para ejecutar la función al hacer clic
     themeToggle.addEventListener("click", toggleTheme);
 
@@ -85,3 +112,107 @@
 
     // Se muestra la primera página al cargar el sitio
     showPage(currentPage);
+
+    // =====================
+    // Funcionalidad del Menú Móvil
+    // =====================
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        // Animación del botón hamburguesa
+        menuToggle.classList.toggle('active');
+    });
+
+    // Cerrar el menú cuando se hace clic en un enlace
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            menuToggle.classList.remove('active');
+        });
+    });
+
+    // Image Carousel Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousel = document.querySelector('.carousel-track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentSlide = 0;
+        const slideCount = slides.length;
+
+        // Function to update carousel position
+        function updateCarousel() {
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        // Previous button click handler
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+            updateCarousel();
+        });
+
+        // Next button click handler
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slideCount;
+            updateCarousel();
+        });
+
+        // Image zoom functionality
+        const images = document.querySelectorAll('.carousel-slide img');
+        
+        // Create modal for zoomed image
+        const modal = document.createElement('div');
+        modal.className = 'image-modal';
+        document.body.appendChild(modal);
+
+        // Add styles for modal
+        const style = document.createElement('style');
+        style.textContent = `
+            .image-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.9);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+            }
+            .image-modal img {
+                max-width: 90%;
+                max-height: 90vh;
+                object-fit: contain;
+            }
+            .image-modal.active {
+                display: flex;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add click event to images
+        images.forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => {
+                modal.innerHTML = `<img src="${img.src}" alt="${img.alt}">`;
+                modal.classList.add('active');
+            });
+        });
+
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+    });
